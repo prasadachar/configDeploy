@@ -13,11 +13,11 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible # install the dependencies needed for your playbook
+            apk add --update curl
       - run:
           name: Configure server
           command: |
             ansible-playbook -i inventory.txt playbook.yml
-        - run: apk add --update curl
         - run:
             name: smoke_test
             command: |
