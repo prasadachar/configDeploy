@@ -4,7 +4,6 @@ jobs:
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
-      - image: alpine:latest
     steps:
       - checkout
       - add_ssh_keys:
@@ -13,14 +12,18 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible # install the dependencies needed for your playbook
-            apk add --update curl
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i inventory.txt playbook.yml
-       - run:
-          name: smoke_test
-          command: |
+            ansible-playbook -i inventory.txt playbook.yml 
+  smoke_test:
+      docker:
+        - image: alpine:latest
+      steps:
+        - run: apk add --update curl
+        - run:
+            name: smoke test.
+            command: |
               URL="https://blog.udacity.com/"
               if curl -s --head ${URL} # test if blog.udacity. com exists
               then
@@ -28,7 +31,6 @@ jobs:
               else
                return 1
               fi
-
 workflows:
   my_workflow:
     jobs:
